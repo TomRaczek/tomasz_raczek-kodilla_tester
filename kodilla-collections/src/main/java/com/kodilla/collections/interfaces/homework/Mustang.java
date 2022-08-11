@@ -1,4 +1,4 @@
-package com.kodilla.interfaces.homework;
+package com.kodilla.collections.interfaces.homework;
 
 public class Mustang implements Car {
 
@@ -15,5 +15,9 @@ public class Mustang implements Car {
     @Override
     public void decreaseSpeed() {
         this.speed -= 10;
+    }
+    @Override
+    public void setSpeed(int speed) {
+        this.speed += speed;
     }
 }

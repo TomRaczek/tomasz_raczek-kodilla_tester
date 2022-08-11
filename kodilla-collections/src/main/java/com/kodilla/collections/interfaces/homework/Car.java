@@ -1,4 +1,4 @@
-package com.kodilla.interfaces.homework;
+package com.kodilla.collections.interfaces.homework;
 
 public interface Car {
 
@@ -7,5 +7,7 @@ public interface Car {
     void increaseSpeed();
 
     void decreaseSpeed();
+
+    void setSpeed(int speed);
 
 }
