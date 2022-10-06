@@ -1,34 +1,18 @@
 package com.kodilla.spring.basic.dependency_injection.homework;
 
-public class ShippingCenter implements NotificationService, DeliveryService {
+public class ShippingCenter {
+    private DeliveryService deliveryService;
+    private NotificationService notificationService;
 
-    private ShippingCenter shippingCenter;
-
+    public ShippingCenter(DeliveryService delivery, NotificationService notifications) {
+        this.deliveryService = delivery;
+        this.notificationService = notifications;
+    }
     public void sendPackage(String address, double weight) {
-        if (shippingCenter.deliverPackage(address, weight)) {
-            shippingCenter.success(address);
+        if (deliveryService.deliverPackage(address, weight)) {
+            notificationService.success(address);
         } else {
-            shippingCenter.fail(address);
+            notificationService.fail(address);
         }
-    }
-
-    @Override
-    public boolean deliverPackage(String address, double weight) {
-        if (weight > 30) {
-            System.out.println("Package too heavy");
-            return false;
-        }
-        System.out.println("Delivering in progress...");
-        return true;
-    }
-
-    @Override
-    public void success(String address) {
-        System.out.println("Package delivered to: " + address);
-    }
-
-    @Override
-    public void fail(String address) {
-        System.out.println("Package not delivered to: " + address);
     }
 }
