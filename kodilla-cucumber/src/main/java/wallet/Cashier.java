@@ -6,8 +6,16 @@ public class Cashier {
     public Cashier(CashSlot cashSlot) {
         this.cashSlot = cashSlot;
     }
+    public void notEnoughMoney() {
+        System.out.println("Not enough money in the wallet");
+    }
 
     public void withdraw(Wallet wallet, int amount) {
-        cashSlot.dispense(amount);
+        if (amount > wallet.getBalance()) {
+            this.notEnoughMoney();
+        } else {
+            wallet.debit(amount);
+            cashSlot.dispense(amount);
+        }
     }
 }

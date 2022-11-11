@@ -1,67 +1,72 @@
 package wallet;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 public class WalletSteps {
-    private final Wallet wallet = new Wallet();
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final CashSlot cashSlot = new CashSlot();
+    Wallet wallet;
 
-    @Given("I have deposited $200 in my wallet")
-    public void i_have_deposited_$200_in_my_wallet() {
-        wallet.deposit(200);
-        Assert.assertEquals("Incorrect wallet balance", 200, wallet.getBalance());
+    public WalletSteps() {
+        System.setOut(new PrintStream(outContent));
     }
-
-    @When("I request $30")
-    public void i_request_$30() {
+    @Given("I have deposited ${int} in my wallet")
+    public void i_have_deposited_$_in_my_wallet(int arg0) {
+        wallet = new Wallet();
+        wallet.deposit(arg0);
+        Assert.assertEquals("Incorrect wallet balance", arg0, wallet.getBalance());
+    }
+    @Given("there is ${int} in my wallet")
+    public void thereIs$InMyWallet(int arg1) {
+        wallet = new Wallet();
+        wallet.deposit(arg1);
+        Assert.assertEquals("Incorrect wallet balance", arg1, wallet.getBalance());
+    }
+    @When("I check the balance of my wallet")
+    public void iCheckTheBalanceOfMyWallet() {
+        wallet.getBalance();
+    }
+    @When("I request ${int}")
+    public void i_request_$(int arg0) {
         Cashier cashier = new Cashier(cashSlot);
-        cashier.withdraw(wallet, 30);
+        cashier.withdraw(wallet, arg0);
     }
-
-    @Then("$30 should be dispensed")
-    public void $30_should_be_dispensed() {
-        Assert.assertEquals(30, cashSlot.getContents());
-    }
-
-    @Given("I have deposited $10 in my wallet")
-    public void i_have_deposited_$10_in_my_wallet() {
-        wallet.deposit(10);
-        Assert.assertEquals("Incorrect wallet balance", 10, wallet.getBalance());
-    }
-
-    @Then("$30 should not be dispensed")
-    public void $30_should_not_be_dispensed() {
-        Assert.assertNotEquals(30, cashSlot.getContents());
-    }
-
-    @When("I request $200")
-    public void i_request_to_withdraw_$200() {
+    @When("I withdraw ${int}")
+    public void iWithdraw$(int arg0) {
         Cashier cashier = new Cashier(cashSlot);
-        cashier.withdraw(wallet, 200);
+        cashier.withdraw(wallet, arg0);
+    }
+    @Then("${int} should not be dispensed")
+    public void $_should_not_be_dispensed(int arg0) {
+        Assert.assertNotEquals(arg0, cashSlot.getContents());
+    }
+    @Then("${int} should be dispensed")
+    public void $_should_be_dispensed(int arg0) {
+        cashSlot.dispense(arg0);
+        Assert.assertEquals(arg0, cashSlot.getContents());
+    }
+    @Then("the balance of my wallet should be ${int}")
+    public void the_balance_of_my_wallet_should_be_$(int arg0) {
+        Assert.assertEquals("Incorrect wallet balance", arg0,  wallet.getBalance());
+    }
+    @Then("I should see that the balance is ${int}")
+    public void iShouldSeeThatTheBalanceIs$(int arg0) {
+        Assert.assertEquals("Incorrect wallet balance", arg0,  wallet.getBalance());
     }
 
-    @Then("$200 should be dispensed")
-    public void $200_should_be_dispensed() {
-        Assert.assertEquals(200, cashSlot.getContents());
+    @Then("nothing should be dispensed")
+    public void nothingShouldBeDispensed() {
+        Assert.assertEquals(0,  cashSlot.getContents());
     }
-
-    @Then("$0 should be dispensed")
-    public void $0_should_be_dispensed() {
-        Assert.assertEquals(0, cashSlot.getContents());
-    }
-
-    @When("I request $0")
-    public void i_request_to_withdraw_$0() {
-        Cashier cashier = new Cashier(cashSlot);
-        cashier.withdraw(wallet, 0);
-    }
-
-    @Given("I have deposited $0 in my wallet")
-    public void i_have_deposited_$0_in_my_wallet() {
-        wallet.deposit(0);
-        Assert.assertEquals("Incorrect wallet balance", 0, wallet.getBalance());
+    @And("I should be told that I don't have enough money in my wallet")
+    public void iShouldBeToldThatIDonTHaveEnoughMoneyInMyWallet() {
+        Assert.assertEquals("Not enough money in the wallet", outContent.toString().trim());
     }
 }
